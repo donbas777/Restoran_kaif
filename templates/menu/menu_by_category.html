@@ -1,0 +1,158 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}{{ category.name }} - La Riviera{% endblock %}
+
+{% block content %}
+<!-- Page Header -->
+<section class="bg-primary text-white py-5 mb-5">
+    <div class="container">
+        <div class="row">
+            <div class="col-12 text-center">
+                <h1>{{ category.name }}</h1>
+                <nav aria-label="breadcrumb">
+                    <ol class="breadcrumb justify-content-center">
+                        <li class="breadcrumb-item"><a href="{% url 'core:home' %}" class="text-white">Головна</a></li>
+                        <li class="breadcrumb-item"><a href="{% url 'menu:menu_list' %}" class="text-white">Меню</a></li>
+                        <li class="breadcrumb-item active text-white" aria-current="page">{{ category.name }}</li>
+                    </ol>
+                </nav>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Category Description Section -->
+{% if category.description %}
+<section class="py-4">
+    <div class="container">
+        <div class="row justify-content-center">
+            <div class="col-lg-8 text-center">
+                <p class="lead">{{ category.description }}</p>
+            </div>
+        </div>
+    </div>
+</section>
+{% endif %}
+
+<!-- Menu Categories Section -->
+<section class="py-5">
+    <div class="container">
+        <div class="row">
+            <!-- Categories Sidebar -->
+            <div class="col-lg-3 mb-4">
+                <div class="card border-0 shadow-sm">
+                    <div class="card-header bg-primary text-white">
+                        <h5 class="mb-0">Категорії</h5>
+                    </div>
+                    <div class="card-body">
+                        <ul class="list-group list-group-flush">
+                            <li class="list-group-item">
+                                <a href="{% url 'menu:menu_list' %}" class="text-decoration-none">Всі страви</a>
+                            </li>
+                            {% for cat in categories %}
+                                <li class="list-group-item">
+                                    <a href="{% url 'menu:menu_by_category' cat.slug %}" class="text-decoration-none {% if cat.id == category.id %}fw-bold text-primary{% endif %}">
+                                        {{ cat.name }}
+                                    </a>
+                                </li>
+                            {% endfor %}
+                        </ul>
+                    </div>
+                </div>
+                
+                <!-- Filters -->
+                <div class="card border-0 shadow-sm mt-4">
+                    <div class="card-header bg-primary text-white">
+                        <h5 class="mb-0">Фільтри</h5>
+                    </div>
+                    <div class="card-body">
+                        <form method="get">
+                            <div class="form-check mb-2">
+                                <input class="form-check-input" type="checkbox" id="vegetarian" name="vegetarian" {% if request.GET.vegetarian %}checked{% endif %}>
+                                <label class="form-check-label" for="vegetarian">
+                                    Вегетаріанські страви
+                                </label>
+                            </div>
+                            <div class="form-check mb-2">
+                                <input class="form-check-input" type="checkbox" id="special" name="special" {% if request.GET.special %}checked{% endif %}>
+                                <label class="form-check-label" for="special">
+                                    Спеціальні пропозиції
+                                </label>
+                            </div>
+                            <button type="submit" class="btn btn-sm btn-primary mt-2">Застосувати</button>
+                        </form>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Menu Items -->
+            <div class="col-lg-9">
+                {% if messages %}
+                    {% for message in messages %}
+                        <div class="alert alert-{{ message.tags }} alert-dismissible fade show" role="alert">
+                            {{ message }}
+                            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                        </div>
+                    {% endfor %}
+                {% endif %}
+                
+                {% if dishes %}
+                    <div class="row">
+                        {% for dish in dishes %}
+                            <div class="col-md-6 col-lg-4 mb-4">
+                                <div class="card dish-card h-100">
+                                    {% if dish.image %}
+                                        <img src="{{ dish.image.url }}" alt="{{ dish.name }}" class="card-img-top dish-img">
+                                    {% else %}
+                                        <img src="{% static 'images/dish-placeholder.jpg' %}" alt="{{ dish.name }}" class="card-img-top dish-img">
+                                    {% endif %}
+                                    
+                                    {% if dish.is_special %}
+                                        <span class="badge bg-danger dish-badge">Спеціальна пропозиція</span>
+                                    {% endif %}
+                                    
+                                    {% if dish.is_vegetarian %}
+                                        <span class="badge bg-success dish-badge" style="top: 40px;">Вегетаріанська</span>
+                                    {% endif %}
+                                    
+                                    <div class="card-body">
+                                        <h5 class="card-title">{{ dish.name }}</h5>
+                                        <p class="card-text">{{ dish.description|truncatechars:100 }}</p>
+                                        <div class="d-flex justify-content-between align-items-center">
+                                            <span class="dish-price">{{ dish.price }} грн</span>
+                                            <a href="{% url 'menu:dish_detail' dish.id %}" class="btn btn-sm btn-outline-primary">Деталі</a>
+                                        </div>
+                                    </div>
+                                    <div class="card-footer bg-white border-0">
+                                        <form method="post" action="{% url 'order:add_to_cart' dish.id %}">
+                                            {% csrf_token %}
+                                            <input type="hidden" name="quantity" value="1">
+                                            <button type="submit" class="btn btn-primary w-100 add-to-cart-btn">
+                                                <i class="fas fa-shopping-cart me-2"></i> Додати до кошика
+                                            </button>
+                                        </form>
+                                    </div>
+                                </div>
+                            </div>
+                        {% endfor %}
+                    </div>
+                {% else %}
+                    <div class="alert alert-info">
+                        <p class="mb-0">На жаль, страви в цій категорії не знайдено. Спробуйте змінити фільтри або перегляньте інші категорії.</p>
+                    </div>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Reservation CTA Section -->
+<section class="py-5 bg-primary text-white text-center">
+    <div class="container">
+        <h2 class="mb-4">Забронюйте столик вже сьогодні</h2>
+        <p class="lead mb-4">Насолоджуйтесь вишуканою кухнею та неперевершеним сервісом у La Riviera</p>
+        <a href="{% url 'reservation:reservation_form' %}" class="btn btn-lg btn-gold">Забронювати зараз</a>
+    </div>
+</section>
+{% endblock %}

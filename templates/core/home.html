@@ -1,0 +1,227 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}La Riviera - Вишуканий ресторан{% endblock %}
+
+{% block content %}
+<!-- Hero Section -->
+<section class="hero" style="background-image: url('{% static 'images/hero-bg.jpg' %}');">
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-8 hero-content">
+                <h1 class="mb-4">Вишукана кухня<br><span class="text-gold">для справжніх гурманів</span></h1>
+                <p class="mb-5">Відкрийте для себе неперевершений смак страв від наших шеф-кухарів у атмосфері комфорту та розкоші.</p>
+                <div class="d-flex flex-wrap gap-3">
+                    <a href="{% url 'menu:menu_list' %}" class="btn btn-gold btn-lg">Переглянути меню</a>
+                    <a href="{% url 'reservation:reservation_form' %}" class="btn btn-outline-light btn-lg">Забронювати столик</a>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- About Section -->
+<section class="py-5">
+    <div class="container">
+        <div class="row align-items-center">
+            <div class="col-lg-6 mb-4 mb-lg-0" data-aos="fade-right">
+                <img src="{% static 'images/restaurant-interior.jpg' %}" alt="Інтер'єр ресторану" class="img-fluid rounded shadow">
+            </div>
+            <div class="col-lg-6" data-aos="fade-left">
+                <h2 class="section-title text-start">Ласкаво просимо до <span class="text-gold">La Riviera</span></h2>
+                <p class="lead">Ресторан вишуканої кухні з неперевершеною атмосферою та сервісом.</p>
+                <p>Наш ресторан пропонує широкий вибір страв європейської та середземноморської кухні, приготованих з найсвіжіших інгредієнтів. Наші шеф-кухарі постійно вдосконалюють меню, щоб здивувати навіть найвибагливіших гурманів.</p>
+                <p>Ми створили ідеальне місце для романтичних вечерь, ділових зустрічей та сімейних святкувань.</p>
+                <a href="{% url 'core:about' %}" class="btn btn-primary mt-3">Дізнатися більше</a>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Featured Dishes -->
+<section class="bg-light py-5">
+    <div class="container">
+        <h2 class="section-title" data-aos="fade-up">Наші фірмові страви</h2>
+        <div class="row">
+            {% for dish in featured_dishes %}
+            <div class="col-md-6 col-lg-4 mb-4" data-aos="fade-up" data-aos-delay="{{ forloop.counter|add:"100" }}">
+                <div class="dish-card h-100">
+                    {% if dish.image %}
+                    <img src="{{ dish.image.url }}" alt="{{ dish.name }}" class="dish-img w-100">
+                    {% else %}
+                    <img src="{% static 'images/dish-placeholder.jpg' %}" alt="{{ dish.name }}" class="dish-img w-100">
+                    {% endif %}
+                    <div class="card-body">
+                        <h5 class="card-title">{{ dish.name }}</h5>
+                        <p class="card-text text-muted">{{ dish.description|truncatechars:100 }}</p>
+                        <div class="d-flex justify-content-between align-items-center mt-3">
+                            <span class="dish-price">{{ dish.price }} грн</span>
+                            <form method="post" action="{% url 'order:add_to_cart' %}">
+                                {% csrf_token %}
+                                <input type="hidden" name="dish_id" value="{{ dish.id }}">
+                                <input type="hidden" name="quantity" value="1">
+                                <button type="submit" class="btn btn-sm btn-primary add-to-cart-btn">
+                                    <i class="fas fa-shopping-cart me-1"></i> Замовити
+                                </button>
+                            </form>
+                        </div>
+                    </div>
+                    {% if dish.is_special %}
+                    <span class="dish-badge bg-danger">Спеціальна пропозиція</span>
+                    {% endif %}
+                </div>
+            </div>
+            {% empty %}
+            <div class="col-12 text-center">
+                <p>На даний момент немає спеціальних страв.</p>
+            </div>
+            {% endfor %}
+        </div>
+        <div class="text-center mt-4" data-aos="fade-up">
+            <a href="{% url 'menu:menu_list' %}" class="btn btn-outline-primary">Переглянути все меню</a>
+        </div>
+    </div>
+</section>
+
+<!-- Reservation CTA -->
+<section class="py-5 bg-primary text-white">
+    <div class="container">
+        <div class="row align-items-center">
+            <div class="col-lg-8 mb-4 mb-lg-0" data-aos="fade-right">
+                <h2 class="mb-4">Забронюйте столик вже сьогодні</h2>
+                <p class="lead mb-0">Забезпечте собі найкраще місце в нашому ресторані, забронювавши столик заздалегідь. Насолоджуйтесь вишуканими стравами та напоями в атмосфері комфорту та розкоші.</p>
+            </div>
+            <div class="col-lg-4 text-lg-end" data-aos="fade-left">
+                <a href="{% url 'reservation:reservation_form' %}" class="btn btn-lg btn-gold">Забронювати столик</a>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Events -->
+{% if upcoming_events %}
+<section class="py-5">
+    <div class="container">
+        <h2 class="section-title" data-aos="fade-up">Найближчі події</h2>
+        <div class="row">
+            {% for event in upcoming_events %}
+            <div class="col-md-6 col-lg-4 mb-4" data-aos="fade-up" data-aos-delay="{{ forloop.counter|add:"100" }}">
+                <div class="event-card h-100">
+                    {% if event.image %}
+                    <img src="{{ event.image.url }}" alt="{{ event.title }}" class="event-img w-100">
+                    {% else %}
+                    <img src="{% static 'images/event-placeholder.jpg' %}" alt="{{ event.title }}" class="event-img w-100">
+                    {% endif %}
+                    <div class="event-date">
+                        <p class="event-day">{{ event.start_date|date:"d" }}</p>
+                        <p class="event-month">{{ event.start_date|date:"M" }}</p>
+                    </div>
+                    <div class="card-body">
+                        <h5 class="card-title">{{ event.title }}</h5>
+                        <p class="card-text text-muted mb-3">{{ event.description|truncatechars:100 }}</p>
+                        <div class="d-flex justify-content-between align-items-center">
+                            <small class="text-muted">
+                                <i class="fas fa-clock me-1"></i> {{ event.start_time|time:"H:i" }}
+                            </small>
+                            <a href="{% url 'events:event_detail' event.id %}" class="btn btn-sm btn-outline-primary">Детальніше</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+        <div class="text-center mt-4" data-aos="fade-up">
+            <a href="{% url 'events:event_list' %}" class="btn btn-outline-primary">Всі події</a>
+        </div>
+    </div>
+</section>
+{% endif %}
+
+<!-- Testimonials -->
+{% if testimonials %}
+<section class="py-5 bg-light">
+    <div class="container">
+        <h2 class="section-title" data-aos="fade-up">Відгуки наших гостей</h2>
+        <div class="testimonial-slider position-relative" data-aos="fade-up">
+            {% for testimonial in testimonials %}
+            <div class="testimonial-card">
+                <div class="d-flex align-items-center mb-3">
+                    {% if testimonial.image %}
+                    <img src="{{ testimonial.image.url }}" alt="{{ testimonial.name }}" class="testimonial-img me-3">
+                    {% else %}
+                    <img src="{% static 'images/avatar-placeholder.jpg' %}" alt="{{ testimonial.name }}" class="testimonial-img me-3">
+                    {% endif %}
+                    <div>
+                        <h5 class="mb-0">{{ testimonial.name }}</h5>
+                        <div class="text-warning">
+                            {% for i in "12345" %}
+                                {% if forloop.counter <= testimonial.rating %}
+                                <i class="fas fa-star"></i>
+                                {% else %}
+                                <i class="far fa-star"></i>
+                                {% endif %}
+                            {% endfor %}
+                        </div>
+                    </div>
+                </div>
+                <p class="mb-0">{{ testimonial.text }}</p>
+            </div>
+            {% endfor %}
+        </div>
+    </div>
+</section>
+{% endif %}
+
+<!-- Promotions -->
+{% if active_promotions %}
+<section class="py-5">
+    <div class="container">
+        <h2 class="section-title" data-aos="fade-up">Спеціальні пропозиції</h2>
+        <div class="row">
+            {% for promotion in active_promotions %}
+            <div class="col-md-6 mb-4" data-aos="fade-up" data-aos-delay="{{ forloop.counter|add:"100" }}">
+                <div class="card h-100 border-0 shadow">
+                    <div class="row g-0">
+                        <div class="col-md-5">
+                            {% if promotion.image %}
+                            <img src="{{ promotion.image.url }}" alt="{{ promotion.title }}" class="img-fluid h-100" style="object-fit: cover;">
+                            {% else %}
+                            <img src="{% static 'images/promotion-placeholder.jpg' %}" alt="{{ promotion.title }}" class="img-fluid h-100" style="object-fit: cover;">
+                            {% endif %}
+                        </div>
+                        <div class="col-md-7">
+                            <div class="card-body">
+                                <h5 class="card-title">{{ promotion.title }}</h5>
+                                <p class="card-text">{{ promotion.description|truncatechars:150 }}</p>
+                                <p class="card-text">
+                                    <small class="text-muted">
+                                        Дійсно до: {{ promotion.end_date|date:"d.m.Y" }}
+                                    </small>
+                                </p>
+                                <a href="{% url 'menu:menu_list' %}" class="btn btn-sm btn-primary">Переглянути меню</a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+    </div>
+</section>
+{% endif %}
+
+<!-- Contact CTA -->
+<section class="py-5 bg-primary text-white">
+    <div class="container">
+        <div class="row align-items-center">
+            <div class="col-lg-8 mb-4 mb-lg-0" data-aos="fade-right">
+                <h2 class="mb-4">Маєте питання?</h2>
+                <p class="lead mb-0">Зв'яжіться з нами, і ми з радістю відповімо на всі ваші запитання та допоможемо організувати ідеальний вечір у нашому ресторані.</p>
+            </div>
+            <div class="col-lg-4 text-lg-end" data-aos="fade-left">
+                <a href="{% url 'core:contact' %}" class="btn btn-lg btn-gold">Зв'язатися з нами</a>
+            </div>
+        </div>
+    </div>
+</section>
+{% endblock %}

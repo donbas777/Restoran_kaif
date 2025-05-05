@@ -1,0 +1,251 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Кошик - La Riviera{% endblock %}
+
+{% block content %}
+<!-- Page Header -->
+<section class="bg-primary text-white py-5 mb-5">
+    <div class="container">
+        <div class="row">
+            <div class="col-12 text-center">
+                <h1>Кошик</h1>
+                <nav aria-label="breadcrumb">
+                    <ol class="breadcrumb justify-content-center">
+                        <li class="breadcrumb-item"><a href="{% url 'core:home' %}" class="text-white">Головна</a></li>
+                        <li class="breadcrumb-item active text-white" aria-current="page">Кошик</li>
+                    </ol>
+                </nav>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Cart Section -->
+<section class="py-5">
+    <div class="container">
+        {% if messages %}
+            {% for message in messages %}
+                <div class="alert alert-{{ message.tags }} alert-dismissible fade show" role="alert">
+                    {{ message }}
+                    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                </div>
+            {% endfor %}
+        {% endif %}
+        
+        <div class="row">
+            {% if cart_items %}
+                <!-- Cart Items -->
+                <div class="col-lg-8 mb-4 mb-lg-0">
+                    <div class="card border-0 shadow-sm">
+                        <div class="card-header bg-primary text-white">
+                            <h4 class="mb-0">Ваше замовлення</h4>
+                        </div>
+                        <div class="card-body p-0">
+                            <div class="table-responsive">
+                                <table class="table table-hover cart-table mb-0">
+                                    <thead>
+                                        <tr>
+                                            <th scope="col">Страва</th>
+                                            <th scope="col">Ціна</th>
+                                            <th scope="col">Кількість</th>
+                                            <th scope="col">Сума</th>
+                                            <th scope="col"></th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        {% for item in cart_items %}
+                                            <tr>
+                                                <td>
+                                                    <div class="d-flex align-items-center">
+                                                        {% if item.dish.image %}
+                                                            <img src="{{ item.dish.image.url }}" alt="{{ item.dish.name }}" class="me-3">
+                                                        {% else %}
+                                                            <img src="{% static 'images/dish-placeholder.jpg' %}" alt="{{ item.dish.name }}" class="me-3">
+                                                        {% endif %}
+                                                        <div>
+                                                            <h6 class="mb-0">{{ item.dish.name }}</h6>
+                                                            <small class="text-muted">{{ item.dish.category.name }}</small>
+                                                        </div>
+                                                    </div>
+                                                </td>
+                                                <td>{{ item.dish.price }} грн</td>
+                                                <td>
+                                                    <form method="post" action="{% url 'order:update_cart' item.id %}" class="d-flex align-items-center">
+                                                        {% csrf_token %}
+                                                        <div class="input-group input-group-sm" style="width: 100px;">
+                                                            <button type="button" class="btn btn-outline-secondary" onclick="decrementQuantity(this)">-</button>
+                                                            <input type="number" class="form-control text-center cart-quantity-input" name="quantity" value="{{ item.quantity }}" min="1" max="10" data-item-id="{{ item.id }}" data-price="{{ item.dish.price }}">
+                                                            <button type="button" class="btn btn-outline-secondary" onclick="incrementQuantity(this)">+</button>
+                                                        </div>
+                                                        <button type="submit" class="btn btn-sm btn-outline-primary ms-2">
+                                                            <i class="fas fa-sync-alt"></i>
+                                                        </button>
+                                                    </form>
+                                                </td>
+                                                <td id="subtotal-{{ item.id }}">{{ item.get_cost }}</td>
+                                                <td>
+                                                    <a href="{% url 'order:remove_from_cart' item.id %}" class="btn btn-sm btn-outline-danger">
+                                                        <i class="fas fa-trash"></i>
+                                                    </a>
+                                                </td>
+                                            </tr>
+                                        {% endfor %}
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Cart Summary -->
+                <div class="col-lg-4">
+                    <div class="card border-0 shadow-sm cart-summary">
+                        <div class="card-header bg-primary text-white">
+                            <h4 class="mb-0">Підсумок замовлення</h4>
+                        </div>
+                        <div class="card-body">
+                            <div class="d-flex justify-content-between mb-3">
+                                <span>Кількість страв:</span>
+                                <span>{{ cart.get_total_items }}</span>
+                            </div>
+                            <div class="d-flex justify-content-between mb-3">
+                                <span>Сума замовлення:</span>
+                                <span id="cart-total">{{ cart.get_total_price }} грн</span>
+                            </div>
+                            <hr>
+                            <div class="d-flex justify-content-between mb-4">
+                                <span class="fw-bold">Загалом до сплати:</span>
+                                <span class="fw-bold">{{ cart.get_total_price }} грн</span>
+                            </div>
+                            <div class="d-grid">
+                                <a href="{% url 'order:checkout' %}" class="btn btn-primary">Оформити замовлення</a>
+                                <a href="{% url 'menu:menu_list' %}" class="btn btn-outline-secondary mt-2">Продовжити покупки</a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            {% else %}
+                <div class="col-12 text-center">
+                    <div class="card border-0 shadow-sm p-5">
+                        <div class="mb-4">
+                            <i class="fas fa-shopping-cart fa-4x text-muted mb-3"></i>
+                            <h3>Ваш кошик порожній</h3>
+                            <p class="lead">Додайте страви з нашого меню, щоб зробити замовлення.</p>
+                        </div>
+                        <div>
+                            <a href="{% url 'menu:menu_list' %}" class="btn btn-primary">Переглянути меню</a>
+                        </div>
+                    </div>
+                </div>
+            {% endif %}
+        </div>
+    </div>
+</section>
+
+<!-- Recommended Dishes Section -->
+<section class="py-5 bg-light">
+    <div class="container">
+        <h2 class="section-title">Рекомендовані страви</h2>
+        
+        <div class="row">
+            <!-- This would be populated with recommended dishes based on user's preferences or popular items -->
+            <div class="col-md-6 col-lg-3 mb-4">
+                <div class="card dish-card h-100">
+                    <img src="{% static 'images/dish-placeholder.jpg' %}" alt="Recommended Dish" class="card-img-top dish-img">
+                    <div class="card-body">
+                        <h5 class="card-title">Паста Карбонара</h5>
+                        <p class="card-text">Класична італійська паста з беконом, яйцем, сиром пармезан та чорним перцем.</p>
+                        <div class="d-flex justify-content-between align-items-center">
+                            <span class="dish-price">220 грн</span>
+                            <a href="#" class="btn btn-sm btn-outline-primary">Деталі</a>
+                        </div>
+                    </div>
+                    <div class="card-footer bg-white border-0">
+                        <button class="btn btn-primary w-100">
+                            <i class="fas fa-shopping-cart me-2"></i> Додати до кошика
+                        </button>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="col-md-6 col-lg-3 mb-4">
+                <div class="card dish-card h-100">
+                    <img src="{% static 'images/dish-placeholder.jpg' %}" alt="Recommended Dish" class="card-img-top dish-img">
+                    <div class="card-body">
+                        <h5 class="card-title">Різото з грибами</h5>
+                        <p class="card-text">Кремове різото з білими грибами, трюфельною олією та сиром пармезан.</p>
+                        <div class="d-flex justify-content-between align-items-center">
+                            <span class="dish-price">250 грн</span>
+                            <a href="#" class="btn btn-sm btn-outline-primary">Деталі</a>
+                        </div>
+                    </div>
+                    <div class="card-footer bg-white border-0">
+                        <button class="btn btn-primary w-100">
+                            <i class="fas fa-shopping-cart me-2"></i> Додати до кошика
+                        </button>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="col-md-6 col-lg-3 mb-4">
+                <div class="card dish-card h-100">
+                    <img src="{% static 'images/dish-placeholder.jpg' %}" alt="Recommended Dish" class="card-img-top dish-img">
+                    <div class="card-body">
+                        <h5 class="card-title">Тірамісу</h5>
+                        <p class="card-text">Класичний італійський десерт з маскарпоне, кавою та какао.</p>
+                        <div class="d-flex justify-content-between align-items-center">
+                            <span class="dish-price">150 грн</span>
+                            <a href="#" class="btn btn-sm btn-outline-primary">Деталі</a>
+                        </div>
+                    </div>
+                    <div class="card-footer bg-white border-0">
+                        <button class="btn btn-primary w-100">
+                            <i class="fas fa-shopping-cart me-2"></i> Додати до кошика
+                        </button>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="col-md-6 col-lg-3 mb-4">
+                <div class="card dish-card h-100">
+                    <img src="{% static 'images/dish-placeholder.jpg' %}" alt="Recommended Dish" class="card-img-top dish-img">
+                    <div class="card-body">
+                        <h5 class="card-title">Капрезе</h5>
+                        <p class="card-text">Салат з томатів, моцарели, базиліку та оливкової олії.</p>
+                        <div class="d-flex justify-content-between align-items-center">
+                            <span class="dish-price">180 грн</span>
+                            <a href="#" class="btn btn-sm btn-outline-primary">Деталі</a>
+                        </div>
+                    </div>
+                    <div class="card-footer bg-white border-0">
+                        <button class="btn btn-primary w-100">
+                            <i class="fas fa-shopping-cart me-2"></i> Додати до кошика
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+{% block extra_js %}
+<script>
+    function decrementQuantity(button) {
+        const input = button.nextElementSibling;
+        const currentValue = parseInt(input.value);
+        if (currentValue > 1) {
+            input.value = currentValue - 1;
+        }
+    }
+    
+    function incrementQuantity(button) {
+        const input = button.previousElementSibling;
+        const currentValue = parseInt(input.value);
+        if (currentValue < 10) {
+            input.value = currentValue + 1;
+        }
+    }
+</script>
+{% endblock %}
+{% endblock %}

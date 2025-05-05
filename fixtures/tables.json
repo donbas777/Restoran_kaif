@@ -1,0 +1,62 @@
+[
+  {
+    "model": "reservation.table",
+    "pk": 1,
+    "fields": {
+      "number": 1,
+      "capacity": 2,
+      "location": "Біля вікна",
+      "is_active": true
+    }
+  },
+  {
+    "model": "reservation.table",
+    "pk": 2,
+    "fields": {
+      "number": 2,
+      "capacity": 2,
+      "location": "Біля вікна",
+      "is_active": true
+    }
+  },
+  {
+    "model": "reservation.table",
+    "pk": 3,
+    "fields": {
+      "number": 3,
+      "capacity": 4,
+      "location": "Центр залу",
+      "is_active": true
+    }
+  },
+  {
+    "model": "reservation.table",
+    "pk": 4,
+    "fields": {
+      "number": 4,
+      "capacity": 4,
+      "location": "Центр залу",
+      "is_active": true
+    }
+  },
+  {
+    "model": "reservation.table",
+    "pk": 5,
+    "fields": {
+      "number": 5,
+      "capacity": 6,
+      "location": "Біля каміна",
+      "is_active": true
+    }
+  },
+  {
+    "model": "reservation.table",
+    "pk": 6,
+    "fields": {
+      "number": 6,
+      "capacity": 8,
+      "location": "VIP зона",
+      "is_active": true
+    }
+  }
+]

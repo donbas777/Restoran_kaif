@@ -1,0 +1,252 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Оформлення замовлення - La Riviera{% endblock %}
+
+{% block content %}
+<!-- Page Header -->
+<section class="bg-primary text-white py-5 mb-5">
+    <div class="container">
+        <div class="row">
+            <div class="col-12 text-center">
+                <h1>Оформлення замовлення</h1>
+                <nav aria-label="breadcrumb">
+                    <ol class="breadcrumb justify-content-center">
+                        <li class="breadcrumb-item"><a href="{% url 'core:home' %}" class="text-white">Головна</a></li>
+                        <li class="breadcrumb-item"><a href="{% url 'order:cart' %}" class="text-white">Кошик</a></li>
+                        <li class="breadcrumb-item active text-white" aria-current="page">Оформлення замовлення</li>
+                    </ol>
+                </nav>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Checkout Section -->
+<section class="py-5">
+    <div class="container">
+        {% if messages %}
+            {% for message in messages %}
+                <div class="alert alert-{{ message.tags }} alert-dismissible fade show" role="alert">
+                    {{ message }}
+                    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                </div>
+            {% endfor %}
+        {% endif %}
+        
+        <form method="post">
+            {% csrf_token %}
+            <div class="row">
+                <!-- Customer Information -->
+                <div class="col-lg-8 mb-4 mb-lg-0">
+                    <div class="card border-0 shadow-sm mb-4">
+                        <div class="card-header bg-primary text-white">
+                            <h4 class="mb-0">Інформація про замовника</h4>
+                        </div>
+                        <div class="card-body p-4">
+                            <div class="row">
+                                <div class="col-md-6 mb-3">
+                                    <label for="{{ form.first_name.id_for_label }}" class="form-label">{{ form.first_name.label }} <span class="text-danger">*</span></label>
+                                    {{ form.first_name }}
+                                    {% if form.first_name.errors %}
+                                        <div class="text-danger">
+                                            {% for error in form.first_name.errors %}
+                                                {{ error }}
+                                            {% endfor %}
+                                        </div>
+                                    {% endif %}
+                                </div>
+                                
+                                <div class="col-md-6 mb-3">
+                                    <label for="{{ form.last_name.id_for_label }}" class="form-label">{{ form.last_name.label }} <span class="text-danger">*</span></label>
+                                    {{ form.last_name }}
+                                    {% if form.last_name.errors %}
+                                        <div class="text-danger">
+                                            {% for error in form.last_name.errors %}
+                                                {{ error }}
+                                            {% endfor %}
+                                        </div>
+                                    {% endif %}
+                                </div>
+                            </div>
+                            
+                            <div class="row">
+                                <div class="col-md-6 mb-3">
+                                    <label for="{{ form.email.id_for_label }}" class="form-label">{{ form.email.label }} <span class="text-danger">*</span></label>
+                                    {{ form.email }}
+                                    {% if form.email.errors %}
+                                        <div class="text-danger">
+                                            {% for error in form.email.errors %}
+                                                {{ error }}
+                                            {% endfor %}
+                                        </div>
+                                    {% endif %}
+                                </div>
+                                
+                                <div class="col-md-6 mb-3">
+                                    <label for="{{ form.phone.id_for_label }}" class="form-label">{{ form.phone.label }} <span class="text-danger">*</span></label>
+                                    {{ form.phone }}
+                                    {% if form.phone.errors %}
+                                        <div class="text-danger">
+                                            {% for error in form.phone.errors %}
+                                                {{ error }}
+                                            {% endfor %}
+                                        </div>
+                                    {% endif %}
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- Delivery Method -->
+                    <div class="card border-0 shadow-sm mb-4">
+                        <div class="card-header bg-primary text-white">
+                            <h4 class="mb-0">Спосіб отримання</h4>
+                        </div>
+                        <div class="card-body p-4">
+                            <div class="mb-3">
+                                <div class="form-check form-check-inline">
+                                    <input class="form-check-input" type="radio" name="delivery_method" id="delivery" value="delivery" checked onchange="toggleAddressField()">
+                                    <label class="form-check-label" for="delivery">Доставка</label>
+                                </div>
+                                <div class="form-check form-check-inline">
+                                    <input class="form-check-input" type="radio" name="delivery_method" id="pickup" value="pickup" onchange="toggleAddressField()">
+                                    <label class="form-check-label" for="pickup">Самовивіз</label>
+                                </div>
+                            </div>
+                            
+                            <div id="addressField">
+                                <label for="{{ form.address.id_for_label }}" class="form-label">{{ form.address.label }} <span class="text-danger">*</span></label>
+                                {{ form.address }}
+                                {% if form.address.errors %}
+                                    <div class="text-danger">
+                                        {% for error in form.address.errors %}
+                                            {{ error }}
+                                        {% endfor %}
+                                    </div>
+                                {% endif %}
+                                <div class="form-text">Вкажіть повну адресу доставки, включаючи номер будинку, квартири та поверх.</div>
+                            </div>
+                            
+                            <div id="pickupInfo" class="mt-3" style="display: none;">
+                                <div class="alert alert-info">
+                                    <h5><i class="fas fa-info-circle me-2"></i> Інформація про самовивіз</h5>
+                                    <p>Ви можете забрати своє замовлення за адресою: вул. Морська, 23, Київ.</p>
+                                    <p class="mb-0">Години роботи: Пн-Чт 11:00-22:00, Пт-Сб 11:00-23:00, Нд 12:00-22:00</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Order Summary -->
+                <div class="col-lg-4">
+                    <div class="card border-0 shadow-sm cart-summary">
+                        <div class="card-header bg-primary text-white">
+                            <h4 class="mb-0">Ваше замовлення</h4>
+                        </div>
+                        <div class="card-body">
+                            {% for item in cart_items %}
+                                <div class="d-flex justify-content-between mb-2">
+                                    <span>{{ item.dish.name }} x {{ item.quantity }}</span>
+                                    <span>{{ item.get_cost }} грн</span>
+                                </div>
+                            {% endfor %}
+                            
+                            <hr>
+                            
+                            <div class="d-flex justify-content-between mb-2">
+                                <span>Сума замовлення:</span>
+                                <span>{{ cart.get_total_price }} грн</span>
+                            </div>
+                            
+                            <div class="d-flex justify-content-between mb-2">
+                                <span>Доставка:</span>
+                                <span>0.00 грн</span>
+                            </div>
+                            
+                            <hr>
+                            
+                            <div class="d-flex justify-content-between mb-4">
+                                <span class="fw-bold">Загалом до сплати:</span>
+                                <span class="fw-bold">{{ cart.get_total_price }} грн</span>
+                            </div>
+                            
+                            <div class="d-grid">
+                                <button type="submit" class="btn btn-primary">Оформити замовлення</button>
+                                <a href="{% url 'order:cart' %}" class="btn btn-outline-secondary mt-2">Повернутися до кошика</a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </form>
+    </div>
+</section>
+
+<!-- Additional Info Section -->
+<section class="py-5 bg-light">
+    <div class="container">
+        <div class="row">
+            <div class="col-md-4 mb-4">
+                <div class="card h-100 border-0 shadow-sm">
+                    <div class="card-body text-center">
+                        <div class="mb-3">
+                            <i class="fas fa-truck fa-3x text-primary"></i>
+                        </div>
+                        <h4>Доставка</h4>
+                        <p>Ми доставляємо замовлення протягом 60-90 хвилин після підтвердження. Доставка безкоштовна при замовленні від 500 грн.</p>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="col-md-4 mb-4">
+                <div class="card h-100 border-0 shadow-sm">
+                    <div class="card-body text-center">
+                        <div class="mb-3">
+                            <i class="fas fa-credit-card fa-3x text-primary"></i>
+                        </div>
+                        <h4>Оплата</h4>
+                        <p>Ви можете оплатити замовлення готівкою при отриманні або карткою онлайн (функція буде доступна найближчим часом).</p>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="col-md-4 mb-4">
+                <div class="card h-100 border-0 shadow-sm">
+                    <div class="card-body text-center">
+                        <div class="mb-3">
+                            <i class="fas fa-question-circle fa-3x text-primary"></i>
+                        </div>
+                        <h4>Питання?</h4>
+                        <p>Якщо у вас виникли питання щодо замовлення, будь ласка, зв'яжіться з нами за телефоном +380 44 123 4567.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+{% block extra_js %}
+<script>
+    function toggleAddressField() {
+        const deliveryRadio = document.getElementById('delivery');
+        const addressField = document.getElementById('addressField');
+        const pickupInfo = document.getElementById('pickupInfo');
+        
+        if (deliveryRadio.checked) {
+            addressField.style.display = 'block';
+            pickupInfo.style.display = 'none';
+        } else {
+            addressField.style.display = 'none';
+            pickupInfo.style.display = 'block';
+        }
+    }
+    
+    // Initialize on page load
+    document.addEventListener('DOMContentLoaded', function() {
+        toggleAddressField();
+    });
+</script>
+{% endblock %}
+{% endblock %}

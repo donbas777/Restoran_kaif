@@ -1,0 +1,44 @@
+[
+  {
+    "model": "events.promotion",
+    "pk": 1,
+    "fields": {
+      "title": "Щасливі години",
+      "description": "Знижка 20% на всі напої з 17:00 до 19:00 з понеділка по четвер.",
+      "start_date": "2025-05-01",
+      "end_date": "2025-06-30",
+      "is_active": true,
+      "image": "promotions/happy_hours.jpg",
+      "created_at": "2025-05-01T10:00:00Z",
+      "updated_at": "2025-05-01T10:00:00Z"
+    }
+  },
+  {
+    "model": "events.promotion",
+    "pk": 2,
+    "fields": {
+      "title": "Сімейна неділя",
+      "description": "Знижка 15% на все меню для сімей з дітьми щонеділі.",
+      "start_date": "2025-05-01",
+      "end_date": "2025-06-30",
+      "is_active": true,
+      "image": "promotions/family_sunday.jpg",
+      "created_at": "2025-05-01T10:00:00Z",
+      "updated_at": "2025-05-01T10:00:00Z"
+    }
+  },
+  {
+    "model": "events.promotion",
+    "pk": 3,
+    "fields": {
+      "title": "День народження",
+      "description": "Знижка 30% на все меню в день вашого народження (при пред'явленні документа).",
+      "start_date": "2025-05-01",
+      "end_date": "2025-12-31",
+      "is_active": true,
+      "image": "promotions/birthday.jpg",
+      "created_at": "2025-05-01T10:00:00Z",
+      "updated_at": "2025-05-01T10:00:00Z"
+    }
+  }
+]

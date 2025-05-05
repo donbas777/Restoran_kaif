@@ -1,0 +1,176 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}{{ dish.name }} - La Riviera{% endblock %}
+
+{% block content %}
+<!-- Page Header -->
+<section class="bg-primary text-white py-5 mb-5">
+    <div class="container">
+        <div class="row">
+            <div class="col-12 text-center">
+                <h1>{{ dish.name }}</h1>
+                <nav aria-label="breadcrumb">
+                    <ol class="breadcrumb justify-content-center">
+                        <li class="breadcrumb-item"><a href="{% url 'core:home' %}" class="text-white">Головна</a></li>
+                        <li class="breadcrumb-item"><a href="{% url 'menu:menu_list' %}" class="text-white">Меню</a></li>
+                        <li class="breadcrumb-item"><a href="{% url 'menu:menu_by_category' dish.category.slug %}" class="text-white">{{ dish.category.name }}</a></li>
+                        <li class="breadcrumb-item active text-white" aria-current="page">{{ dish.name }}</li>
+                    </ol>
+                </nav>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Dish Detail Section -->
+<section class="py-5">
+    <div class="container">
+        {% if messages %}
+            {% for message in messages %}
+                <div class="alert alert-{{ message.tags }} alert-dismissible fade show" role="alert">
+                    {{ message }}
+                    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                </div>
+            {% endfor %}
+        {% endif %}
+        
+        <div class="row">
+            <!-- Dish Image -->
+            <div class="col-lg-6 mb-4 mb-lg-0">
+                <div class="dish-image-container">
+                    {% if dish.image %}
+                        <img src="{{ dish.image.url }}" alt="{{ dish.name }}" class="img-fluid rounded shadow">
+                    {% else %}
+                        <img src="{% static 'images/dish-placeholder.jpg' %}" alt="{{ dish.name }}" class="img-fluid rounded shadow">
+                    {% endif %}
+                    
+                    {% if dish.is_special %}
+                        <span class="badge bg-danger position-absolute top-0 end-0 m-3 p-2">Спеціальна пропозиція</span>
+                    {% endif %}
+                    
+                    {% if dish.is_vegetarian %}
+                        <span class="badge bg-success position-absolute top-0 start-0 m-3 p-2">Вегетаріанська</span>
+                    {% endif %}
+                </div>
+            </div>
+            
+            <!-- Dish Info -->
+            <div class="col-lg-6">
+                <h2>{{ dish.name }}</h2>
+                <p class="text-muted">Категорія: <a href="{% url 'menu:menu_by_category' dish.category.slug %}">{{ dish.category.name }}</a></p>
+                
+                <div class="mb-4">
+                    <h4 class="dish-price text-primary">{{ dish.price }} грн</h4>
+                </div>
+                
+                <div class="mb-4">
+                    <h5>Опис</h5>
+                    <p>{{ dish.description }}</p>
+                </div>
+                
+                <form method="post" action="{% url 'order:add_to_cart' dish.id %}" class="mb-4">
+                    {% csrf_token %}
+                    <div class="row align-items-center">
+                        <div class="col-md-4 mb-3 mb-md-0">
+                            <label for="quantity" class="form-label">Кількість</label>
+                            <div class="input-group">
+                                <button type="button" class="btn btn-outline-secondary" onclick="decrementQuantity()">-</button>
+                                <input type="number" class="form-control text-center" id="quantity" name="quantity" value="1" min="1" max="10">
+                                <button type="button" class="btn btn-outline-secondary" onclick="incrementQuantity()">+</button>
+                            </div>
+                        </div>
+                        <div class="col-md-8">
+                            <button type="submit" class="btn btn-primary w-100 add-to-cart-btn">
+                                <i class="fas fa-shopping-cart me-2"></i> Додати до кошика
+                            </button>
+                        </div>
+                    </div>
+                </form>
+                
+                <div class="dish-meta">
+                    <div class="d-flex mb-2">
+                        <div class="me-4">
+                            <i class="fas fa-check-circle text-success me-2"></i>
+                            <span>{% if dish.is_available %}В наявності{% else %}Немає в наявності{% endif %}</span>
+                        </div>
+                        <div>
+                            <i class="fas fa-clock text-primary me-2"></i>
+                            <span>Додано: {{ dish.created_at|date:"d.m.Y" }}</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Related Dishes Section -->
+<section class="py-5 bg-light">
+    <div class="container">
+        <h2 class="section-title">Вам також може сподобатися</h2>
+        
+        <div class="row">
+            {% if related_dishes %}
+                {% for related_dish in related_dishes %}
+                    <div class="col-md-6 col-lg-3 mb-4">
+                        <div class="card dish-card h-100">
+                            {% if related_dish.image %}
+                                <img src="{{ related_dish.image.url }}" alt="{{ related_dish.name }}" class="card-img-top dish-img">
+                            {% else %}
+                                <img src="{% static 'images/dish-placeholder.jpg' %}" alt="{{ related_dish.name }}" class="card-img-top dish-img">
+                            {% endif %}
+                            
+                            {% if related_dish.is_special %}
+                                <span class="badge bg-danger dish-badge">Спеціальна пропозиція</span>
+                            {% endif %}
+                            
+                            <div class="card-body">
+                                <h5 class="card-title">{{ related_dish.name }}</h5>
+                                <p class="card-text">{{ related_dish.description|truncatechars:80 }}</p>
+                                <div class="d-flex justify-content-between align-items-center">
+                                    <span class="dish-price">{{ related_dish.price }} грн</span>
+                                    <a href="{% url 'menu:dish_detail' related_dish.id %}" class="btn btn-sm btn-outline-primary">Деталі</a>
+                                </div>
+                            </div>
+                            <div class="card-footer bg-white border-0">
+                                <form method="post" action="{% url 'order:add_to_cart' related_dish.id %}">
+                                    {% csrf_token %}
+                                    <input type="hidden" name="quantity" value="1">
+                                    <button type="submit" class="btn btn-primary w-100 add-to-cart-btn">
+                                        <i class="fas fa-shopping-cart me-2"></i> Додати до кошика
+                                    </button>
+                                </form>
+                            </div>
+                        </div>
+                    </div>
+                {% endfor %}
+            {% else %}
+                <div class="col-12 text-center">
+                    <p>Немає пов'язаних страв.</p>
+                </div>
+            {% endif %}
+        </div>
+    </div>
+</section>
+
+{% block extra_js %}
+<script>
+    function decrementQuantity() {
+        const quantityInput = document.getElementById('quantity');
+        const currentValue = parseInt(quantityInput.value);
+        if (currentValue > 1) {
+            quantityInput.value = currentValue - 1;
+        }
+    }
+    
+    function incrementQuantity() {
+        const quantityInput = document.getElementById('quantity');
+        const currentValue = parseInt(quantityInput.value);
+        if (currentValue < 10) {
+            quantityInput.value = currentValue + 1;
+        }
+    }
+</script>
+{% endblock %}
+{% endblock %}

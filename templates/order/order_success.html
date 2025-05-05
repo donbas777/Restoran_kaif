@@ -1,0 +1,172 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Замовлення успішне - La Riviera{% endblock %}
+
+{% block content %}
+<!-- Page Header -->
+<section class="bg-primary text-white py-5 mb-5">
+    <div class="container">
+        <div class="row">
+            <div class="col-12 text-center">
+                <h1>Замовлення успішне</h1>
+                <nav aria-label="breadcrumb">
+                    <ol class="breadcrumb justify-content-center">
+                        <li class="breadcrumb-item"><a href="{% url 'core:home' %}" class="text-white">Головна</a></li>
+                        <li class="breadcrumb-item"><a href="{% url 'order:cart' %}" class="text-white">Кошик</a></li>
+                        <li class="breadcrumb-item active text-white" aria-current="page">Замовлення успішне</li>
+                    </ol>
+                </nav>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Order Success Section -->
+<section class="py-5">
+    <div class="container">
+        <div class="row justify-content-center">
+            <div class="col-lg-8 text-center">
+                {% if messages %}
+                    {% for message in messages %}
+                        <div class="alert alert-{{ message.tags }} alert-dismissible fade show" role="alert">
+                            {{ message }}
+                            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                        </div>
+                    {% endfor %}
+                {% endif %}
+                
+                <div class="card border-0 shadow-sm">
+                    <div class="card-body p-5">
+                        <div class="mb-4">
+                            <i class="fas fa-check-circle text-success fa-5x mb-3"></i>
+                            <h2>Дякуємо за ваше замовлення!</h2>
+                            <p class="lead">Ваше замовлення #{{ order.id }} успішно оформлено.</p>
+                        </div>
+                        
+                        <div class="alert alert-info mb-4">
+                            <p class="mb-0"><i class="fas fa-envelope me-2"></i> Ми надіслали підтвердження на вашу електронну адресу {{ order.email }}.</p>
+                        </div>
+                        
+                        <div class="mb-4">
+                            <h5>Деталі замовлення</h5>
+                            <p><strong>Номер замовлення:</strong> #{{ order.id }}</p>
+                            <p><strong>Дата:</strong> {{ order.created_at|date:"d.m.Y H:i" }}</p>
+                            <p><strong>Сума:</strong> {{ order.total_price }} грн</p>
+                            <p><strong>Спосіб отримання:</strong> {{ order.get_delivery_method_display }}</p>
+                            
+                            {% if order.delivery_method == 'delivery' %}
+                                <p><strong>Адреса доставки:</strong> {{ order.address }}</p>
+                            {% else %}
+                                <p><strong>Адреса самовивозу:</strong> вул. Морська, 23, Київ</p>
+                            {% endif %}
+                        </div>
+                        
+                        <div class="mb-4">
+                            <h5>Що далі?</h5>
+                            <p>Ми почнемо готувати ваше замовлення найближчим часом. Ви отримаєте повідомлення про статус вашого замовлення на вказану електронну адресу.</p>
+                            {% if order.delivery_method == 'delivery' %}
+                                <p>Очікуваний час доставки: 60-90 хвилин.</p>
+                            {% else %}
+                                <p>Ваше замовлення буде готове до самовивозу через 30-45 хвилин.</p>
+                            {% endif %}
+                        </div>
+                        
+                        <div class="d-flex justify-content-center gap-3">
+                            <a href="{% url 'menu:menu_list' %}" class="btn btn-primary">Повернутися до меню</a>
+                            <a href="{% url 'core:home' %}" class="btn btn-outline-secondary">На головну</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Order Items Section -->
+<section class="py-5 bg-light">
+    <div class="container">
+        <h2 class="section-title">Ваше замовлення</h2>
+        
+        <div class="row justify-content-center">
+            <div class="col-lg-8">
+                <div class="card border-0 shadow-sm">
+                    <div class="card-body p-0">
+                        <div class="table-responsive">
+                            <table class="table mb-0">
+                                <thead class="table-light">
+                                    <tr>
+                                        <th>Страва</th>
+                                        <th>Кількість</th>
+                                        <th class="text-end">Ціна</th>
+                                        <th class="text-end">Сума</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    {% for item in order.items.all %}
+                                        <tr>
+                                            <td>{{ item.dish.name }}</td>
+                                            <td>{{ item.quantity }}</td>
+                                            <td class="text-end">{{ item.price }} грн</td>
+                                            <td class="text-end">{{ item.get_cost }} грн</td>
+                                        </tr>
+                                    {% endfor %}
+                                </tbody>
+                                <tfoot class="table-light">
+                                    <tr>
+                                        <th colspan="3" class="text-end">Загалом:</th>
+                                        <th class="text-end">{{ order.total_price }} грн</th>
+                                    </tr>
+                                </tfoot>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Additional Info Section -->
+<section class="py-5">
+    <div class="container">
+        <div class="row">
+            <div class="col-md-4 mb-4">
+                <div class="card h-100 border-0 shadow-sm">
+                    <div class="card-body text-center">
+                        <div class="mb-3">
+                            <i class="fas fa-utensils fa-3x text-primary"></i>
+                        </div>
+                        <h4>Якість гарантована</h4>
+                        <p>Ми готуємо всі страви з найсвіжіших інгредієнтів, щоб забезпечити найкращий смак та якість.</p>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="col-md-4 mb-4">
+                <div class="card h-100 border-0 shadow-sm">
+                    <div class="card-body text-center">
+                        <div class="mb-3">
+                            <i class="fas fa-history fa-3x text-primary"></i>
+                        </div>
+                        <h4>Історія замовлень</h4>
+                        <p>Ви можете переглянути історію своїх замовлень у своєму особистому кабінеті після реєстрації.</p>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="col-md-4 mb-4">
+                <div class="card h-100 border-0 shadow-sm">
+                    <div class="card-body text-center">
+                        <div class="mb-3">
+                            <i class="fas fa-phone fa-3x text-primary"></i>
+                        </div>
+                        <h4>Зв'яжіться з нами</h4>
+                        <p>Якщо у вас виникли питання щодо вашого замовлення, будь ласка, зателефонуйте нам за номером +380 44 123 4567.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+{% endblock %}

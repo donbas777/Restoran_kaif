@@ -1,0 +1,67 @@
+[
+  {
+    "model": "menu.category",
+    "pk": 1,
+    "fields": {
+      "name": "Закуски",
+      "slug": "zakusky",
+      "description": "Легкі закуски для початку трапези",
+      "image": "categories/appetizers.jpg",
+      "is_active": true,
+      "created_at": "2025-05-01T10:00:00Z",
+      "updated_at": "2025-05-01T10:00:00Z"
+    }
+  },
+  {
+    "model": "menu.category",
+    "pk": 2,
+    "fields": {
+      "name": "Супи",
+      "slug": "supy",
+      "description": "Гарячі та холодні супи",
+      "image": "categories/soups.jpg",
+      "is_active": true,
+      "created_at": "2025-05-01T10:00:00Z",
+      "updated_at": "2025-05-01T10:00:00Z"
+    }
+  },
+  {
+    "model": "menu.category",
+    "pk": 3,
+    "fields": {
+      "name": "Основні страви",
+      "slug": "osnovni-stravy",
+      "description": "Вишукані основні страви",
+      "image": "categories/main_courses.jpg",
+      "is_active": true,
+      "created_at": "2025-05-01T10:00:00Z",
+      "updated_at": "2025-05-01T10:00:00Z"
+    }
+  },
+  {
+    "model": "menu.category",
+    "pk": 4,
+    "fields": {
+      "name": "Десерти",
+      "slug": "deserty",
+      "description": "Солодкі десерти та випічка",
+      "image": "categories/desserts.jpg",
+      "is_active": true,
+      "created_at": "2025-05-01T10:00:00Z",
+      "updated_at": "2025-05-01T10:00:00Z"
+    }
+  },
+  {
+    "model": "menu.category",
+    "pk": 5,
+    "fields": {
+      "name": "Напої",
+      "slug": "napoi",
+      "description": "Безалкогольні та алкогольні напої",
+      "image": "categories/drinks.jpg",
+      "is_active": true,
+      "created_at": "2025-05-01T10:00:00Z",
+      "updated_at": "2025-05-01T10:00:00Z"
+    }
+  }
+]

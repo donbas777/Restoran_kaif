@@ -1,0 +1,272 @@
+[
+  {
+    "model": "menu.dish",
+    "pk": 1,
+    "fields": {
+      "name": "Карпаччо з телятини",
+      "slug": "karpachcho-z-telyatyny",
+      "category": 1,
+      "description": "Тонко нарізана телятина з руколою, пармезаном та оливковою олією",
+      "ingredients": "Телятина, рукола, пармезан, оливкова олія, лимонний сік, сіль, перець",
+      "price": "320.00",
+      "image": "dishes/carpaccio.jpg",
+      "is_vegetarian": false,
+      "is_special": true,
+      "is_available": true,
+      "created_at": "2025-05-01T10:00:00Z",
+      "updated_at": "2025-05-01T10:00:00Z"
+    }
+  },
+  {
+    "model": "menu.dish",
+    "pk": 2,
+    "fields": {
+      "name": "Брускетта з томатами",
+      "slug": "brusketta-z-tomatamy",
+      "category": 1,
+      "description": "Хрусткий багет з томатами, базиліком та оливковою олією",
+      "ingredients": "Багет, томати, базилік, часник, оливкова олія, сіль, перець",
+      "price": "180.00",
+      "image": "dishes/bruschetta.jpg",
+      "is_vegetarian": true,
+      "is_special": false,
+      "is_available": true,
+      "created_at": "2025-05-01T10:00:00Z",
+      "updated_at": "2025-05-01T10:00:00Z"
+    }
+  },
+  {
+    "model": "menu.dish",
+    "pk": 3,
+    "fields": {
+      "name": "Тартар з лосося",
+      "slug": "tartar-z-lososya",
+      "category": 1,
+      "description": "Свіжий лосось з авокадо, цибулею та лимонним соком",
+      "ingredients": "Лосось, авокадо, червона цибуля, каперси, лимонний сік, оливкова олія, сіль, перець",
+      "price": "350.00",
+      "image": "dishes/salmon_tartare.jpg",
+      "is_vegetarian": false,
+      "is_special": true,
+      "is_available": true,
+      "created_at": "2025-05-01T10:00:00Z",
+      "updated_at": "2025-05-01T10:00:00Z"
+    }
+  },
+  {
+    "model": "menu.dish",
+    "pk": 4,
+    "fields": {
+      "name": "Борщ український",
+      "slug": "borshch-ukrainskyi",
+      "category": 2,
+      "description": "Традиційний український борщ з яловичиною та сметаною",
+      "ingredients": "Яловичина, буряк, капуста, морква, цибуля, томатна паста, сметана, зелень",
+      "price": "200.00",
+      "image": "dishes/borsch.jpg",
+      "is_vegetarian": false,
+      "is_special": false,
+      "is_available": true,
+      "created_at": "2025-05-01T10:00:00Z",
+      "updated_at": "2025-05-01T10:00:00Z"
+    }
+  },
+  {
+    "model": "menu.dish",
+    "pk": 5,
+    "fields": {
+      "name": "Крем-суп з грибів",
+      "slug": "krem-sup-z-hrybiv",
+      "category": 2,
+      "description": "Ніжний крем-суп з білих грибів з трюфельною олією",
+      "ingredients": "Білі гриби, вершки, цибуля, часник, трюфельна олія, сіль, перець",
+      "price": "250.00",
+      "image": "dishes/mushroom_soup.jpg",
+      "is_vegetarian": true,
+      "is_special": false,
+      "is_available": true,
+      "created_at": "2025-05-01T10:00:00Z",
+      "updated_at": "2025-05-01T10:00:00Z"
+    }
+  },
+  {
+    "model": "menu.dish",
+    "pk": 6,
+    "fields": {
+      "name": "Гаспачо",
+      "slug": "gaspacho",
+      "category": 2,
+      "description": "Холодний іспанський суп з томатів та овочів",
+      "ingredients": "Томати, огірки, перець, цибуля, часник, оливкова олія, хліб, сіль, перець",
+      "price": "220.00",
+      "image": "dishes/gazpacho.jpg",
+      "is_vegetarian": true,
+      "is_special": false,
+      "is_available": true,
+      "created_at": "2025-05-01T10:00:00Z",
+      "updated_at": "2025-05-01T10:00:00Z"
+    }
+  },
+  {
+    "model": "menu.dish",
+    "pk": 7,
+    "fields": {
+      "name": "Філе міньйон",
+      "slug": "file-minion",
+      "category": 3,
+      "description": "Соковите філе яловичини з картопляним пюре та соусом деміглас",
+      "ingredients": "Яловича вирізка, картопля, вершки, масло, червоне вино, сіль, перець",
+      "price": "550.00",
+      "image": "dishes/filet_mignon.jpg",
+      "is_vegetarian": false,
+      "is_special": true,
+      "is_available": true,
+      "created_at": "2025-05-01T10:00:00Z",
+      "updated_at": "2025-05-01T10:00:00Z"
+    }
+  },
+  {
+    "model": "menu.dish",
+    "pk": 8,
+    "fields": {
+      "name": "Різотто з грибами",
+      "slug": "rizotto-z-hrybamy",
+      "category": 3,
+      "description": "Кремове різотто з білими грибами та пармезаном",
+      "ingredients": "Рис арборіо, білі гриби, цибуля, часник, біле вино, вершки, пармезан, сіль, перець",
+      "price": "320.00",
+      "image": "dishes/risotto.jpg",
+      "is_vegetarian": true,
+      "is_special": false,
+      "is_available": true,
+      "created_at": "2025-05-01T10:00:00Z",
+      "updated_at": "2025-05-01T10:00:00Z"
+    }
+  },
+  {
+    "model": "menu.dish",
+    "pk": 9,
+    "fields": {
+      "name": "Лосось на грилі",
+      "slug": "losos-na-hryli",
+      "category": 3,
+      "description": "Лосось на грилі з овочами та лимонним соусом",
+      "ingredients": "Філе лосося, цукіні, баклажан, перець, лимон, оливкова олія, сіль, перець",
+      "price": "420.00",
+      "image": "dishes/grilled_salmon.jpg",
+      "is_vegetarian": false,
+      "is_special": false,
+      "is_available": true,
+      "created_at": "2025-05-01T10:00:00Z",
+      "updated_at": "2025-05-01T10:00:00Z"
+    }
+  },
+  {
+    "model": "menu.dish",
+    "pk": 10,
+    "fields": {
+      "name": "Тірамісу",
+      "slug": "tiramisu",
+      "category": 4,
+      "description": "Класичний італійський десерт з маскарпоне та кавою",
+      "ingredients": "Маскарпоне, яйця, цукор, кава, савоярді, какао",
+      "price": "180.00",
+      "image": "dishes/tiramisu.jpg",
+      "is_vegetarian": true,
+      "is_special": false,
+      "is_available": true,
+      "created_at": "2025-05-01T10:00:00Z",
+      "updated_at": "2025-05-01T10:00:00Z"
+    }
+  },
+  {
+    "model": "menu.dish",
+    "pk": 11,
+    "fields": {
+      "name": "Шоколадний фондан",
+      "slug": "shokoladnyi-fondan",
+      "category": 4,
+      "description": "Теплий шоколадний кекс з рідкою серединою та ванільним морозивом",
+      "ingredients": "Шоколад, масло, яйця, цукор, борошно, ванільне морозиво",
+      "price": "220.00",
+      "image": "dishes/chocolate_fondant.jpg",
+      "is_vegetarian": true,
+      "is_special": true,
+      "is_available": true,
+      "created_at": "2025-05-01T10:00:00Z",
+      "updated_at": "2025-05-01T10:00:00Z"
+    }
+  },
+  {
+    "model": "menu.dish",
+    "pk": 12,
+    "fields": {
+      "name": "Чізкейк",
+      "slug": "chizkejk",
+      "category": 4,
+      "description": "Ніжний чізкейк з ягідним соусом",
+      "ingredients": "Вершковий сир, яйця, цукор, вершки, печиво, масло, ягоди",
+      "price": "190.00",
+      "image": "dishes/cheesecake.jpg",
+      "is_vegetarian": true,
+      "is_special": false,
+      "is_available": true,
+      "created_at": "2025-05-01T10:00:00Z",
+      "updated_at": "2025-05-01T10:00:00Z"
+    }
+  },
+  {
+    "model": "menu.dish",
+    "pk": 13,
+    "fields": {
+      "name": "Лимонад домашній",
+      "slug": "lymonad-domashnii",
+      "category": 5,
+      "description": "Освіжаючий лимонад з лимоном та м'ятою",
+      "ingredients": "Лимон, цукор, м'ята, газована вода, лід",
+      "price": "120.00",
+      "image": "dishes/lemonade.jpg",
+      "is_vegetarian": true,
+      "is_special": false,
+      "is_available": true,
+      "created_at": "2025-05-01T10:00:00Z",
+      "updated_at": "2025-05-01T10:00:00Z"
+    }
+  },
+  {
+    "model": "menu.dish",
+    "pk": 14,
+    "fields": {
+      "name": "Вино червоне",
+      "slug": "vyno-chervone",
+      "category": 5,
+      "description": "Сухе червоне вино Каберне Совіньйон",
+      "ingredients": "Виноград Каберне Совіньйон",
+      "price": "350.00",
+      "image": "dishes/red_wine.jpg",
+      "is_vegetarian": true,
+      "is_special": false,
+      "is_available": true,
+      "created_at": "2025-05-01T10:00:00Z",
+      "updated_at": "2025-05-01T10:00:00Z"
+    }
+  },
+  {
+    "model": "menu.dish",
+    "pk": 15,
+    "fields": {
+      "name": "Еспресо",
+      "slug": "espreso",
+      "category": 5,
+      "description": "Класичний італійський еспресо",
+      "ingredients": "Кава арабіка",
+      "price": "80.00",
+      "image": "dishes/espresso.jpg",
+      "is_vegetarian": true,
+      "is_special": false,
+      "is_available": true,
+      "created_at": "2025-05-01T10:00:00Z",
+      "updated_at": "2025-05-01T10:00:00Z"
+    }
+  }
+]

@@ -1,0 +1,111 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Бронювання успішне - La Riviera{% endblock %}
+
+{% block content %}
+<!-- Page Header -->
+<section class="bg-primary text-white py-5 mb-5">
+    <div class="container">
+        <div class="row">
+            <div class="col-12 text-center">
+                <h1>Бронювання успішне</h1>
+                <nav aria-label="breadcrumb">
+                    <ol class="breadcrumb justify-content-center">
+                        <li class="breadcrumb-item"><a href="{% url 'core:home' %}" class="text-white">Головна</a></li>
+                        <li class="breadcrumb-item"><a href="{% url 'reservation:reservation_form' %}" class="text-white">Бронювання</a></li>
+                        <li class="breadcrumb-item active text-white" aria-current="page">Успішно</li>
+                    </ol>
+                </nav>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Reservation Success Section -->
+<section class="py-5">
+    <div class="container">
+        <div class="row justify-content-center">
+            <div class="col-lg-8 text-center">
+                {% if messages %}
+                    {% for message in messages %}
+                        <div class="alert alert-{{ message.tags }} alert-dismissible fade show" role="alert">
+                            {{ message }}
+                            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                        </div>
+                    {% endfor %}
+                {% endif %}
+                
+                <div class="card border-0 shadow-sm">
+                    <div class="card-body p-5">
+                        <div class="mb-4">
+                            <i class="fas fa-check-circle text-success fa-5x mb-3"></i>
+                            <h2>Дякуємо за ваше бронювання!</h2>
+                            <p class="lead">Ваш столик успішно заброньовано. Ми з нетерпінням чекаємо на вашу зустріч!</p>
+                        </div>
+                        
+                        <div class="alert alert-info mb-4">
+                            <p class="mb-0"><i class="fas fa-envelope me-2"></i> Ми надіслали підтвердження на вашу електронну адресу.</p>
+                        </div>
+                        
+                        <div class="mb-4">
+                            <h5>Що далі?</h5>
+                            <p>Ви можете переглянути наше меню заздалегідь, щоб підготуватися до вашого візиту. Якщо у вас виникли питання або вам потрібно внести зміни до вашого бронювання, будь ласка, зв'яжіться з нами.</p>
+                        </div>
+                        
+                        <div class="d-flex justify-content-center gap-3">
+                            <a href="{% url 'menu:menu_list' %}" class="btn btn-primary">Переглянути меню</a>
+                            <a href="{% url 'core:home' %}" class="btn btn-outline-secondary">На головну</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Additional Info Section -->
+<section class="py-5 bg-light">
+    <div class="container">
+        <div class="row">
+            <div class="col-md-4 mb-4">
+                <div class="card h-100 border-0 shadow-sm">
+                    <div class="card-body text-center">
+                        <div class="mb-3">
+                            <i class="fas fa-map-marker-alt fa-3x text-primary"></i>
+                        </div>
+                        <h4>Як нас знайти</h4>
+                        <p>Ми знаходимося за адресою: вул. Морська, 23, Київ, 01001.</p>
+                        <p>Поруч є платна парковка для наших гостей.</p>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="col-md-4 mb-4">
+                <div class="card h-100 border-0 shadow-sm">
+                    <div class="card-body text-center">
+                        <div class="mb-3">
+                            <i class="fas fa-utensils fa-3x text-primary"></i>
+                        </div>
+                        <h4>Спеціальні побажання</h4>
+                        <p>Якщо у вас є особливі дієтичні вимоги або алергії, будь ласка, повідомте нас заздалегідь, щоб ми могли забезпечити вам найкращий досвід.</p>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="col-md-4 mb-4">
+                <div class="card h-100 border-0 shadow-sm">
+                    <div class="card-body text-center">
+                        <div class="mb-3">
+                            <i class="fas fa-phone fa-3x text-primary"></i>
+                        </div>
+                        <h4>Зв'яжіться з нами</h4>
+                        <p>Якщо вам потрібно внести зміни до вашого бронювання або у вас є питання, будь ласка, зателефонуйте нам:</p>
+                        <p class="mb-0">+380 44 123 4567</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+{% endblock %}
