@@ -1,0 +1,157 @@
+// Діаграма бази даних ресторану "La Riviera"
+// Використовуйте цей код на сайті https://dbdiagram.io/
+
+// Таблиці додатку Core
+Table core_contact {
+  id integer [pk, increment]
+  name varchar(100) [not null]
+  email varchar(254) [not null]
+  subject varchar(200) [not null]
+  message text [not null]
+  created_at datetime [not null]
+}
+
+Table core_teammember {
+  id integer [pk, increment]
+  name varchar(100) [not null]
+  position varchar(100) [not null]
+  bio text [not null]
+  image varchar(100)
+  order integer [not null]
+  is_active boolean [not null]
+}
+
+Table core_testimonial {
+  id integer [pk, increment]
+  name varchar(100) [not null]
+  text text [not null]
+  rating integer [not null]
+  image varchar(100)
+  is_active boolean [not null]
+  created_at datetime [not null]
+}
+
+// Таблиці додатку Menu
+Table menu_category {
+  id integer [pk, increment]
+  name varchar(100) [not null]
+  slug varchar(100) [not null, unique]
+  description text [not null]
+  image varchar(100)
+  order integer [not null]
+}
+
+Table menu_dish {
+  id integer [pk, increment]
+  name varchar(200) [not null]
+  slug varchar(200) [not null, unique]
+  description text [not null]
+  price decimal(10,2) [not null]
+  image varchar(100) [not null]
+  preparation_time integer [not null]
+  is_vegetarian boolean [not null]
+  is_special boolean [not null]
+  is_available boolean [not null]
+  created_at datetime [not null]
+  updated_at datetime [not null]
+  category_id integer [not null, ref: > menu_category.id]
+}
+
+// Таблиці додатку Reservation
+Table reservation_table {
+  id integer [pk, increment]
+  number integer [not null, unique]
+  capacity integer [not null]
+  location varchar(100) [not null]
+  is_active boolean [not null]
+}
+
+Table reservation_reservation {
+  id integer [pk, increment]
+  name varchar(100) [not null]
+  email varchar(254) [not null]
+  phone varchar(20) [not null]
+  date date [not null]
+  time time [not null]
+  guests integer [not null]
+  special_request text
+  status varchar(20) [not null]
+  created_at datetime [not null]
+  table_id integer [ref: > reservation_table.id]
+}
+
+// Таблиці додатку Events
+Table events_event {
+  id integer [pk, increment]
+  title varchar(200) [not null]
+  description text [not null]
+  image varchar(100)
+  start_date date [not null]
+  end_date date [not null]
+  start_time time [not null]
+  end_time time [not null]
+  location varchar(200) [not null]
+  price decimal(10,2) [not null]
+  is_free boolean [not null]
+  created_at datetime [not null]
+  updated_at datetime [not null]
+}
+
+Table events_promotion {
+  id integer [pk, increment]
+  title varchar(200) [not null]
+  description text [not null]
+  image varchar(100)
+  discount_percent integer
+  discount_amount decimal(10,2)
+  start_date date [not null]
+  end_date date [not null]
+  is_active boolean [not null]
+  created_at datetime [not null]
+  updated_at datetime [not null]
+}
+
+// Таблиці додатку Order
+Table order_cart {
+  id integer [pk, increment]
+  created_at datetime [not null]
+  updated_at datetime [not null]
+  session_id varchar(100) [not null]
+}
+
+Table order_cartitem {
+  id integer [pk, increment]
+  quantity integer [not null]
+  created_at datetime [not null]
+  updated_at datetime [not null]
+  cart_id integer [not null, ref: > order_cart.id]
+  dish_id integer [not null, ref: > menu_dish.id]
+}
+
+Table order_order {
+  id integer [pk, increment]
+  name varchar(100) [not null]
+  email varchar(254) [not null]
+  phone varchar(20) [not null]
+  address text [not null]
+  total_price decimal(10,2) [not null]
+  status varchar(20) [not null]
+  created_at datetime [not null]
+  updated_at datetime [not null]
+}
+
+Table order_orderitem {
+  id integer [pk, increment]
+  quantity integer [not null]
+  price decimal(10,2) [not null]
+  dish_id integer [not null, ref: > menu_dish.id]
+  order_id integer [not null, ref: > order_order.id]
+}
+
+// Додаткові зв'язки та індекси
+Ref: menu_dish.category_id > menu_category.id
+Ref: reservation_reservation.table_id > reservation_table.id
+Ref: order_cartitem.cart_id > order_cart.id
+Ref: order_cartitem.dish_id > menu_dish.id
+Ref: order_orderitem.order_id > order_order.id
+Ref: order_orderitem.dish_id > menu_dish.id

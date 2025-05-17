@@ -1,0 +1,197 @@
+# Опис бази даних ресторану "La Riviera"
+
+## Загальна інформація
+
+- **Тип СУБД**: SQLite (для розробки), можливе використання PostgreSQL для продакшну
+- **ORM**: Django ORM
+- **Міграції**: Автоматичні міграції Django
+
+## Структура бази даних
+
+### Таблиці додатку Core
+
+#### core_contact
+- **id** - INTEGER PRIMARY KEY
+- **name** - VARCHAR(100) NOT NULL
+- **email** - VARCHAR(254) NOT NULL
+- **subject** - VARCHAR(200) NOT NULL
+- **message** - TEXT NOT NULL
+- **created_at** - DATETIME NOT NULL
+
+#### core_teammember
+- **id** - INTEGER PRIMARY KEY
+- **name** - VARCHAR(100) NOT NULL
+- **position** - VARCHAR(100) NOT NULL
+- **bio** - TEXT NOT NULL
+- **image** - VARCHAR(100) NULL
+- **order** - INTEGER NOT NULL
+- **is_active** - BOOLEAN NOT NULL
+
+#### core_testimonial
+- **id** - INTEGER PRIMARY KEY
+- **name** - VARCHAR(100) NOT NULL
+- **text** - TEXT NOT NULL
+- **rating** - INTEGER NOT NULL
+- **image** - VARCHAR(100) NULL
+- **is_active** - BOOLEAN NOT NULL
+- **created_at** - DATETIME NOT NULL
+
+### Таблиці додатку Menu
+
+#### menu_category
+- **id** - INTEGER PRIMARY KEY
+- **name** - VARCHAR(100) NOT NULL
+- **slug** - VARCHAR(100) NOT NULL UNIQUE
+- **description** - TEXT NOT NULL
+- **image** - VARCHAR(100) NULL
+- **order** - INTEGER NOT NULL
+
+#### menu_dish
+- **id** - INTEGER PRIMARY KEY
+- **name** - VARCHAR(200) NOT NULL
+- **slug** - VARCHAR(200) NOT NULL UNIQUE
+- **description** - TEXT NOT NULL
+- **price** - DECIMAL(10,2) NOT NULL
+- **image** - VARCHAR(100) NOT NULL
+- **preparation_time** - INTEGER NOT NULL
+- **is_vegetarian** - BOOLEAN NOT NULL
+- **is_special** - BOOLEAN NOT NULL
+- **is_available** - BOOLEAN NOT NULL
+- **created_at** - DATETIME NOT NULL
+- **updated_at** - DATETIME NOT NULL
+- **category_id** - INTEGER NOT NULL REFERENCES menu_category(id)
+
+### Таблиці додатку Reservation
+
+#### reservation_table
+- **id** - INTEGER PRIMARY KEY
+- **number** - INTEGER NOT NULL UNIQUE
+- **capacity** - INTEGER NOT NULL
+- **location** - VARCHAR(100) NOT NULL
+- **is_active** - BOOLEAN NOT NULL
+
+#### reservation_reservation
+- **id** - INTEGER PRIMARY KEY
+- **name** - VARCHAR(100) NOT NULL
+- **email** - VARCHAR(254) NOT NULL
+- **phone** - VARCHAR(20) NOT NULL
+- **date** - DATE NOT NULL
+- **time** - TIME NOT NULL
+- **guests** - INTEGER NOT NULL
+- **special_request** - TEXT NULL
+- **status** - VARCHAR(20) NOT NULL
+- **created_at** - DATETIME NOT NULL
+- **table_id** - INTEGER NULL REFERENCES reservation_table(id)
+
+### Таблиці додатку Events
+
+#### events_event
+- **id** - INTEGER PRIMARY KEY
+- **title** - VARCHAR(200) NOT NULL
+- **description** - TEXT NOT NULL
+- **image** - VARCHAR(100) NULL
+- **start_date** - DATE NOT NULL
+- **end_date** - DATE NOT NULL
+- **start_time** - TIME NOT NULL
+- **end_time** - TIME NOT NULL
+- **location** - VARCHAR(200) NOT NULL
+- **price** - DECIMAL(10,2) NOT NULL
+- **is_free** - BOOLEAN NOT NULL
+- **created_at** - DATETIME NOT NULL
+- **updated_at** - DATETIME NOT NULL
+
+#### events_promotion
+- **id** - INTEGER PRIMARY KEY
+- **title** - VARCHAR(200) NOT NULL
+- **description** - TEXT NOT NULL
+- **image** - VARCHAR(100) NULL
+- **discount_percent** - INTEGER NULL
+- **discount_amount** - DECIMAL(10,2) NULL
+- **start_date** - DATE NOT NULL
+- **end_date** - DATE NOT NULL
+- **is_active** - BOOLEAN NOT NULL
+- **created_at** - DATETIME NOT NULL
+- **updated_at** - DATETIME NOT NULL
+
+### Таблиці додатку Order
+
+#### order_cart
+- **id** - INTEGER PRIMARY KEY
+- **created_at** - DATETIME NOT NULL
+- **updated_at** - DATETIME NOT NULL
+- **session_id** - VARCHAR(100) NOT NULL
+
+#### order_cartitem
+- **id** - INTEGER PRIMARY KEY
+- **quantity** - INTEGER NOT NULL
+- **created_at** - DATETIME NOT NULL
+- **updated_at** - DATETIME NOT NULL
+- **cart_id** - INTEGER NOT NULL REFERENCES order_cart(id)
+- **dish_id** - INTEGER NOT NULL REFERENCES menu_dish(id)
+
+#### order_order
+- **id** - INTEGER PRIMARY KEY
+- **name** - VARCHAR(100) NOT NULL
+- **email** - VARCHAR(254) NOT NULL
+- **phone** - VARCHAR(20) NOT NULL
+- **address** - TEXT NOT NULL
+- **total_price** - DECIMAL(10,2) NOT NULL
+- **status** - VARCHAR(20) NOT NULL
+- **created_at** - DATETIME NOT NULL
+- **updated_at** - DATETIME NOT NULL
+
+#### order_orderitem
+- **id** - INTEGER PRIMARY KEY
+- **quantity** - INTEGER NOT NULL
+- **price** - DECIMAL(10,2) NOT NULL
+- **dish_id** - INTEGER NOT NULL REFERENCES menu_dish(id)
+- **order_id** - INTEGER NOT NULL REFERENCES order_order(id)
+
+## Зв'язки між таблицями
+
+1. **menu_dish** -> **menu_category** (Many-to-One)
+   - Кожна страва належить до однієї категорії
+   - Категорія може містити багато страв
+
+2. **reservation_reservation** -> **reservation_table** (Many-to-One)
+   - Кожне бронювання може бути призначене для одного столика
+   - Столик може мати багато бронювань (в різний час)
+
+3. **order_cartitem** -> **order_cart** (Many-to-One)
+   - Кошик містить багато елементів
+   - Кожен елемент належить одному кошику
+
+4. **order_cartitem** -> **menu_dish** (Many-to-One)
+   - Елемент кошика посилається на конкретну страву
+   - Страва може бути в багатьох елементах кошика
+
+5. **order_orderitem** -> **order_order** (Many-to-One)
+   - Замовлення містить багато елементів
+   - Кожен елемент належить одному замовленню
+
+6. **order_orderitem** -> **menu_dish** (Many-to-One)
+   - Елемент замовлення посилається на конкретну страву
+   - Страва може бути в багатьох елементах замовлення
+
+## Індекси
+
+- **menu_category.slug** - унікальний індекс для швидкого пошуку за URL
+- **menu_dish.slug** - унікальний індекс для швидкого пошуку за URL
+- **menu_dish.category_id** - індекс для швидкого пошуку страв за категорією
+- **reservation_table.number** - унікальний індекс для швидкого пошуку за номером столика
+- **order_cart.session_id** - індекс для швидкого пошуку кошика за сесією
+- **order_cartitem.cart_id** - індекс для швидкого пошуку елементів за кошиком
+- **order_orderitem.order_id** - індекс для швидкого пошуку елементів за замовленням
+
+## Обмеження цілісності
+
+- **NOT NULL** - обов'язкові поля в усіх таблицях
+- **UNIQUE** - унікальні значення для slug, номерів столиків
+- **FOREIGN KEY** - зовнішні ключі для зв'язків між таблицями
+- **CHECK** - обмеження на значення (наприклад, rating між 1 та 5)
+
+## Тригери та процедури
+
+- Django ORM автоматично керує більшістю операцій
+- Автоматичне створення slug для категорій та страв
+- Автоматичне оновлення поля updated_at при зміні записів
